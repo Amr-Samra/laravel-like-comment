@@ -16,5 +16,16 @@ class Comment extends Model
     /**
 	 * Fillable array
      */
-    protected $fillable = ['user_id', 'parent_id', 'item_id', 'comment'];
+    protected $fillable = ['user_id', 'parent_id', 'item_id', 'comment','attachment'];
+
+
+    public static function getUploadPath()
+    {
+        return 'comments/'.date('Y/m');
+    }
+
+    public function file()
+    {
+        return $this->belongsTo(\App\File::class,'attachment');
+    }
 }

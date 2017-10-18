@@ -2,6 +2,7 @@
 
 namespace risul\LaravelLikeComment\Controllers;
 
+use App\File;
 use risul\LaravelLikeComment\Models\Comment;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -44,12 +45,22 @@ class CommentController extends Controller
 	    $comment->parent_id = $parent;
 	    $comment->item_id = $itemId;
 	    $comment->comment = $commentBody;
-
+        if($request->hasFile('attachment'))
+        {
+            $attachment=$request->file('attachment');
+            $path=Comment::getUploadPath();
+            $file=File::uploadFile($attachment,$path,$userId);
+            $comment->attachment=$file;
+        }
 	    $comment->save();
-
 	    $id = $comment->id;
-    	return response()->json(['flag' => 1, 'id' => $id, 'comment' => $commentBody, 'item_id' => $itemId, 'userName' => $user['name'], 'userPic' => $userPic]);
-// dd($comment);
+	    $data=['flag' => 1, 'id' => $id, 'comment' => $commentBody, 'item_id' => $itemId, 'userName' => $user['name'], 'userPic' => $userPic];
+    	if($comment->file)
+        {
+            $data['filePath']=url('/').$comment->file->remote_path;
+            $data['fileName']=$comment->file->name;
+        }
+	    return response()->json($data);
     }
 
     /**
@@ -78,11 +89,12 @@ class CommentController extends Controller
             $comment->name = $user['name'];
             $comment->email = $user['email'];
             $comment->url = $user['url'];
-
+            $comment->avatar=$user['avatar'];
             if($user['avatar'] == 'gravatar'){
                 $hash = md5(strtolower(trim($user['email'])));
                 $comment->avatar = "http://www.gravatar.com/avatar/$hash?d=identicon";
             }
+
         }
 
         return $comments;

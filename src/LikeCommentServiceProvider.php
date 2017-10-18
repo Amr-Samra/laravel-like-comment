@@ -18,7 +18,7 @@ class LikeCommentServiceProvider extends ServiceProvider
             __DIR__.'/migrations' => database_path('migrations'),
             __DIR__.'/public/assets' => public_path('vendor/laravelLikeComment'),
             __DIR__.'/config/laravelLikeComment.php' => config_path('laravelLikeComment.php')
-        ]);
+        ],'comments');
     }
 
     /**

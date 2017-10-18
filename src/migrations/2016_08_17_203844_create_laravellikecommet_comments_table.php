@@ -18,6 +18,8 @@ class CreateLaravellikecommetCommentsTable extends Migration
             $table->integer('parent_id');
             $table->string('item_id'); // ModelName_modelId
             $table->string('comment');
+            $table->string('comment')->nullable();
+            $table->string('attachment')->nullable();
             $table->timestamps();
         });
     }
