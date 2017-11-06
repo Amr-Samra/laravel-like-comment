@@ -3,6 +3,8 @@
 namespace risul\LaravelLikeComment\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Events\NewComment;
+use App\User;
 
 class Comment extends Model
 {
@@ -18,10 +20,18 @@ class Comment extends Model
      */
     protected $fillable = ['user_id', 'parent_id', 'item_id', 'comment','attachment'];
 
+    Protected $events = [
+        'created' => NewComment::class
+    ];
 
     public static function getUploadPath()
     {
         return 'comments/'.date('Y/m');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function file()
